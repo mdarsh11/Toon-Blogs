@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blogs - ToonBlogs</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+
+    header {
+      background-color: #FF6F61;
+      padding: 20px;
+      font-size: 2em;
+      font-weight: bold;
+      position: relative;
+      height: 60px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .falling-letter {
+      position: absolute;
+      top: -50px;
+      font-weight: bold;
+      font-size: 2em;
+      color: white;
+      user-select: none;
+      animation: fall 3s linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        top: 70px;
+        opacity: 0;
+      }
+    }
+
+    nav {
+      background: #222;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .slider-section {
+      margin: 30px auto;
+      max-width: 1200px;
+      padding: 10px 20px;
+    }
+
+    .slider-section h2 {
+      margin-bottom: 15px;
+    }
+
+    .slider-wrapper {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slider {
+      display: flex;
+      gap: 20px;
+    }
+
+    .slider.scrollable {
+      animation: scroll-left 40s linear infinite;
+    }
+
+    .slider-wrapper:hover .slider.scrollable {
+      animation-play-state: paused;
+    }
+
+    @keyframes scroll-left {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .card {
+      flex: 0 0 auto;
+      width: 250px;
+      background: #333;
+      border-radius: 10px;
+      padding: 10px;
+      position: relative;
+    }
+
+    .card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .card h4 {
+      margin: 10px 0 5px 0;
+      cursor: pointer;
+    }
+
+    .card h4.clicked {
+      text-decoration: underline;
+    }
+
+    .card .date {
+      font-size: 12px;
+      color: #bbb;
+      margin-bottom: 5px;
+    }
+
+    .card p.content {
+      font-size: 14px;
+      color: #ccc;
+      margin-top: 5px;
+      height: 60px;
+      overflow: hidden;
+    }
+
+    .like-btn {
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: white;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      transition: color 0.3s;
+    }
+
+    .like-btn.liked {
+      color: red;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      color: white;
+      position: relative;
+      max-height: 90vh;
+      overflow: hidden;
+    }
+
+    .modal-content img {
+      width: 100%;
+      max-height: 250px;
+      object-fit: contain;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+
+    .modal-text-container {
+      overflow-y: auto;
+      max-height: 300px;
+      padding-right: 10px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* Image pop-out overlay */
+    .img-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.9);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .img-popup img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header id="header"></header>
+
+  <nav>
+    <a href="welcome.html">Home</a>
+    <a href="profile.html">Profile</a>
+    <a href="upload.html">Upload Blog</a>
+    <a href="view.html">Blogs</a>
+  </nav>
+
+  <section class="slider-section">
+    <h2>Anime Blogs</h2>
+    <div class="slider-wrapper">
+      <div class="slider" id="animeSlider"></div>
+    </div>
+  </section>
+
+  <section class="slider-section">
+    <h2>Movie Blogs</h2>
+    <div class="slider-wrapper">
+      <div class="slider" id="movieSlider"></div>
+    </div>
+  </section>
+
+  <section class="slider-section">
+    <h2>My Blogs</h2>
+    <div class="slider-wrapper">
+      <div class="slider" id="myBlogsSlider"></div>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div class="modal" id="blogModal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">×</button>
+      <h2 id="modalTitle"></h2>
+      <p id="modalDate"></p>
+      <img id="modalImage" src="" alt="">
+      <div class="modal-text-container">
+        <p id="modalText"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Popup -->
+  <div class="img-popup" id="imgPopup" onclick="this.style.display='none'">
+    <img id="popupImage" src="" alt="">
+  </div>
+
+  <script>
+    const header = document.getElementById('header');
+    const text = "View Blog";
+
+    function createFallingLetter(char, delay) {
+      const span = document.createElement('span');
+      span.classList.add('falling-letter');
+      span.textContent = char;
+      span.style.left = `${Math.random() * (window.innerWidth - 20)}px`;
+      span.style.animationDuration = `${3 + Math.random() * 2}s`;
+      span.style.animationDelay = `${delay}s`;
+      header.appendChild(span);
+      span.addEventListener('animationend', () => header.removeChild(span));
+    }
+
+    function animateLetters() {
+      let delay = 0;
+      for (let i = 0; i < text.length; i++) {
+        if (text[i] !== ' ') {
+          createFallingLetter(text[i], delay);
+          delay += 0.3;
+        }
+      }
+    }
+
+    animateLetters();
+    setInterval(animateLetters, 4000);
+
+     const animeBlogs = [
+      { title: "Naruto's Legacy", date:'May 20, 2025', image: 'https://i.postimg.cc/DynmGjGc/Leonardo-Phoenix-09-A-vibrant-dynamic-illustration-depicting-t-2.jpg', content: "Naruto, created by Masashi Kishimoto and produced by Studio Pierrot, began as a manga in 1999 and anime in 2002. The story follows Naruto Uzumaki, a spirited orphan carrying the Nine-Tails Fox, who dreams of becoming Hokage, the village leader. Despite hardship and rejection, Naruto’s journey of friendship, perseverance, and growth captivates fans worldwide. The series became a global phenomenon, known for its emotional depth and memorable characters like Sasuke and Sakura. Even after the original ended, Naruto’s legacy continues with Boruto and a huge fanbase celebrating the ninja spirit through art, conventions, and community." },
+      { title: 'Attack on Titan', date: 'May 21, 2025', image: 'https://i.postimg.cc/SRT0Jx83/Leonardo-Phoenix-10-A-dramatic-and-intense-scene-from-the-popu-2.jpg', content: "Attack on Titan, created by Hajime Isayama and animated by Wit Studio and later MAPPA, debuted in 2009 as a manga and 2013 as an anime. It quickly gained fame for its dark story, intense battles, and stunning animation. Set in a world where humanity fights for survival against giant Titans, the story follows Eren Yeager’s quest to protect his people and uncover harsh truths. The series captivated fans worldwide with its deep themes of freedom, sacrifice, and mystery. Today, Attack on Titan remains a major influence in anime, with a passionate, loyal global fanbase." },
+      { title: 'One Piece Voyages', date: 'May 24, 2025', image: 'https://i.postimg.cc/TwyGgm2G/Leonardo-Phoenix-10-A-vibrant-and-dynamic-illustration-of-the-1.jpg', content: "One Piece, created by Eiichiro Oda and running since 1997, is an epic tale of adventure on the high seas. Produced by Toei Animation, the anime brings to life the journey of Monkey D. Luffy and his crew as they search for the legendary treasure, One Piece. The story blends thrilling battles, humor, and heartfelt friendships across diverse islands and seas. Luffy’s dream to become the Pirate King drives him through dangers, mysteries, and powerful foes. With over 1,000 episodes, One Piece has captivated fans globally. Its rich world and enduring characters have made it a beloved classic in anime history." },
+      { title: 'Dragon Ball Energy', date: 'May 25, 2025', image: 'https://i.postimg.cc/rsFmBzMP/Leonardo-Phoenix-10-A-vibrant-dynamic-illustration-of-the-Drag-3.jpg', content: "Dragon Ball, created by Akira Toriyama and first serialized in 1984, is a legendary anime that introduced generations to thrilling martial arts and powerful energy attacks. Produced by Toei Animation, it follows Goku’s journey from a curious boy to a mighty warrior protecting Earth. The series is famous for iconic battles fueled by Ki energy, including the legendary Kamehameha wave and transformations like Super Saiyan. Dragon Ball’s intense action, humor, and memorable characters like Vegeta and Piccolo have energized fans worldwide. Its influence remains strong, inspiring countless anime and fans with its boundless energy and spirit." },
+    ];
+
+    const movieBlogs = [
+      { title: 'Inception', date: '2025-06-01', image: 'https://nextbestpicture-com.b-cdn.net/wp-content/uploads/2024/04/Inception.jpg', content: "Inception, directed by Christopher Nolan and released in 2010, is a mind-bending sci-fi thriller that explores the world of shared dreaming and subconscious manipulation. The story follows Dom Cobb, a skilled thief who steals secrets by entering people’s dreams, as he takes on a final job: planting an idea into a target’s mind—known as “inception.” Combining stunning visuals, a complex layered narrative, and a powerful score by Hans Zimmer, Inception challenges viewers to question reality and perception. Its innovative concept, strong performances, and intellectual depth have made it a modern classic, sparking endless discussion and admiration worldwide." },
+      { title: 'Oppenheimer', date: '2025-06-02', image: 'https://blogassets.airtel.in/wp-content/uploads/2024/09/open.jpg', content: "*Oppenheimer*, directed by Christopher Nolan and released in 2023, is a gripping biographical drama about J. Robert Oppenheimer, the physicist known as the “father of the atomic bomb.” The film explores his pivotal role in the Manhattan Project during World War II, delving into the moral dilemmas and consequences of creating nuclear weapons. With powerful performances, especially by Cillian Murphy, and Nolan’s signature storytelling and visual style, *Oppenheimer* offers a deep, thought-provoking look at science, responsibility, and the costs of innovation. It has been praised for its emotional impact and historical depth, resonating strongly with audiences worldwide." },
+      { title: 'Interstellar', date: '2025-06-03', image: 'https://edgroom-blogs.s3.ap-south-1.amazonaws.com/202310071805064792540_38983_u23h.jpg', content: "*Interstellar*, directed by Christopher Nolan and released in 2014, is a visually stunning sci-fi epic that explores space travel, time dilation, and humanity’s survival. The story follows Cooper, a former pilot, who joins a mission through a wormhole to find a new home for Earth’s struggling population. Blending emotional family drama with complex scientific concepts like black holes and relativity, the film features breathtaking visuals and a powerful score by Hans Zimmer. *Interstellar* challenges viewers to think about love, sacrifice, and the future, becoming a beloved classic that inspires curiosity about the universe and our place within it." },
+      { title: 'Dune 2', date: '2025-06-04', image: 'https://sm.ign.com/t/ign_in/screenshot/default/dune-part-two_suy6.2560.jpg', content: "Dune: Part Two is the highly anticipated sequel to Denis Villeneuve’s 2021 sci-fi masterpiece Dune. Continuing the adaptation of Frank Herbert’s classic novel, it follows Paul Atreides as he embraces his destiny among the desert planet Arrakis and leads a rebellion against oppressive forces. Known for its epic scale, stunning visuals, and rich storytelling, the first film set a high bar. Dune: Part Two promises to dive deeper into political intrigue, powerful alliances, and legendary battles, further exploring themes of power, survival, and prophecy. Fans eagerly await its release, expecting a thrilling continuation of this epic saga." },
+      { title: 'New Avengers', date: '2025-06-05', image: 'https://gizmodo.com/app/uploads/2025/03/Thunderbolts-poster-crop.jpg', content: "*New Avengers* refers to several comic book storylines and teams within the Marvel Universe, where a fresh lineup of heroes come together to face new threats. First introduced in 2005 by writer Brian Michael Bendis, the *New Avengers* series featured iconic characters like Spider-Man, Wolverine, Luke Cage, and Iron Man, alongside classic Avengers. This team brought a grittier, more diverse dynamic, tackling complex missions often darker than previous Avengers stories. The *New Avengers* have influenced Marvel’s cinematic universe by inspiring new team formations and story arcs, keeping the Avengers legacy alive and evolving for modern audiences worldwide." }
+    ];
+
+    const myBlog = JSON.parse(localStorage.getItem('uploadedBlog')) || {
+      title: 'My First Blog',
+      date: '2025-06-04',
+      image: 'https://via.placeholder.com/250x150?text=My+Blog',
+      content: "This is the description of your first personal blog. It can be quite long to test scrolling in the modal."
+    };
+
+    const myBlogs = [myBlog];
+
+    function renderSlider(blogs, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      const enableScroll = blogs.length >= 4;
+      if (enableScroll) container.classList.add('scrollable');
+      else container.classList.remove('scrollable');
+      const renderBlogs = enableScroll ? [...blogs, ...blogs] : blogs;
+
+      renderBlogs.forEach(blog => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${blog.image}" alt="${blog.title}">
+          <h4 onclick="showBlogDetails(this, '${blog.title}', '${blog.date}', '${blog.image}', \`${blog.content}\`)">${blog.title}</h4>
+          <p class="date">${blog.date}</p>
+          <p class="content">${blog.content}</p>
+          <button class="like-btn" onclick="toggleLike(this)">&#10084;</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function toggleLike(btn) {
+      btn.classList.toggle('liked');
+    }
+
+    function showBlogDetails(element, title, date, image, content) {
+      document.querySelectorAll('.card h4').forEach(h => h.classList.remove('clicked'));
+      element.classList.add('clicked');
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDate').textContent = "Uploaded on: " + date;
+      const imgEl = document.getElementById('modalImage');
+      imgEl.src = image;
+      imgEl.onclick = () => openImagePopup(image);
+      document.getElementById('modalText').textContent = content;
+      document.getElementById('blogModal').style.display = 'flex';
+    }
+
+    function closeModal(event) {
+      if (!event || event.target === document.getElementById('blogModal')) {
+        document.getElementById('blogModal').style.display = 'none';
+      }
+    }
+
+    function openImagePopup(src) {
+      document.getElementById('popupImage').src = src;
+      document.getElementById('imgPopup').style.display = 'flex';
+    }
+
+    renderSlider(animeBlogs, 'animeSlider');
+    renderSlider(movieBlogs, 'movieSlider');
+    renderSlider(myBlogs, 'myBlogsSlider');
+  </script>
+</body>
+</html>

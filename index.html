@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to ToonBlogs</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #000;
+      color: white;
+      text-align: center;
+    }
+    header {
+      background-color: #FF6F61;
+      padding: 20px;
+      font-size: 2em;
+      font-weight: bold;
+      position: relative;
+      height: 60px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .falling-letter {
+      position: absolute;
+      top: -50px;
+      font-weight: bold;
+      font-size: 2em;
+      color: white;
+      user-select: none;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+    @keyframes fall {
+      to {
+        top: 70px;
+        opacity: 0;
+      }
+    }
+
+    .hero-section {
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      transition: background-image 1s ease-in-out;
+    }
+    .hero-text {
+      font-size: 3em;
+      font-weight: bold;
+      animation: fadeInDown 2s ease-in-out;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .hero-button {
+      margin-top: 30px;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      background-color: #FF6F61;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      animation: fadeInUp 2s ease-in-out;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+    .hero-button:hover {
+      transform: scale(1.1);
+      background-color: #ff443d;
+    }
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header id="header">
+    <!-- Falling letters will appear here -->
+  </header>
+
+  <div class="hero-section" id="hero">
+    <div class="hero-text">A place for all Anime and Movie Lovers</div>
+    <button class="hero-button" onclick="location.href='auth.html'">Welcome</button>
+  </div>
+
+  <script>
+    const backgroundImages = [
+      'https://i.postimg.cc/ncgs8W4p/Flux-Dev-Create-a-captivating-illustration-featuring-a-diverse-2.jpg',
+      'https://i.postimg.cc/1zv908RJ/Flux-Dev-Create-a-captivating-illustration-featuring-a-diverse-1.jpg',
+      'https://i.postimg.cc/cJxx8RWv/Flux-Dev-Create-a-captivating-illustration-featuring-a-diverse-0.jpg'
+    ];
+
+    const heroSection = document.getElementById('hero');
+    let currentIndex = 0;
+
+    function changeBackground() {
+      currentIndex = (currentIndex + 1) % backgroundImages.length;
+      heroSection.style.backgroundImage = `url('${backgroundImages[currentIndex]}')`;
+    }
+
+    // Set initial background
+    heroSection.style.backgroundImage = `url('${backgroundImages[0]}')`;
+
+    // Change every 6 seconds
+    setInterval(changeBackground, 6000);
+
+    // --- Falling letters animation ---
+    const header = document.getElementById('header');
+    const text = "Toon-Blogs";
+
+    function createFallingLetter(char, delay) {
+      const span = document.createElement('span');
+      span.classList.add('falling-letter');
+      span.textContent = char;
+      span.style.left = `${Math.random() * (window.innerWidth - 20)}px`;
+      span.style.animationDuration = `${3 + Math.random() * 2}s`; // 3 to 5 seconds
+      span.style.animationDelay = `${delay}s`;
+      header.appendChild(span);
+
+      // Remove span after animation to keep DOM clean
+      span.addEventListener('animationend', () => {
+        header.removeChild(span);
+      });
+    }
+
+    // Animate letters falling one by one
+    function animateLetters() {
+      let delay = 0;
+      for(let i = 0; i < text.length; i++) {
+        if (text[i] !== ' ') {
+          createFallingLetter(text[i], delay);
+          delay += 0.3; // next letter starts after 0.3 seconds
+        }
+      }
+    }
+
+    // Run animation every 4 seconds to keep letters falling continuously
+    animateLetters();
+    setInterval(animateLetters, 4000);
+  </script>
+</body>
+</html>

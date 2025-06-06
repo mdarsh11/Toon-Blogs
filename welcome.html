@@ -1,0 +1,250 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ToonBlogs - Home</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      cursor: default;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      position: relative;
+    }
+    header {
+      background: #FF6F61;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      height: 100px;
+      overflow: hidden;
+    }
+    header h1, header p {
+      position: relative;
+      z-index: 1;
+    }
+    .falling-letter {
+      position: absolute;
+      top: -50px;
+      font-weight: bold;
+      font-size: 2em;
+      color: white;
+      user-select: none;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+    @keyframes fall {
+      to {
+        top: 120px;
+        opacity: 0;
+      }
+    }
+
+    nav {
+      background: #222;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px;
+      z-index: 10;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    footer {
+      background: #222;
+      color: #ccc;
+      text-align: center;
+      padding: 15px;
+      margin-top: 30px;
+      font-size: 14px;
+    }
+    .hero {
+      background-image: url('https://i.postimg.cc/ncgs8W4p/Flux-Dev-Create-a-captivating-illustration-featuring-a-diverse-2.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-size: 28px;
+      color: white;
+      text-shadow: 2px 2px 5px black;
+      position: relative;
+      z-index: 5;
+      transition: background-image 1s ease-in-out;
+    }
+    .hero span {
+      font-size: 20px;
+      margin-top: 10px;
+    }
+    .section {
+      padding: 20px;
+    }
+    .section h2 {
+      text-align: center;
+      color: #FF6F61;
+    }
+    .scroll-wrapper {
+      overflow: hidden;
+      width: 100%;
+      position: relative;
+    }
+    .scroll-track {
+      display: flex;
+      width: max-content;
+      animation: scrollLoop 30s linear infinite;
+    }
+    @keyframes scrollLoop {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .scroll-track:hover {
+      animation-play-state: paused;
+    }
+    .blog-card {
+      background: #333;
+      padding: 15px;
+      border-radius: 10px;
+      width: 250px;
+      margin-right: 15px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .blog-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .blog-card a {
+      color: #FF6F61;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+    .blog-card .date {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header id="header">
+    <h1>ToonBlogs</h1>
+    <p>Your daily dose of Anime & Cartoons</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="auth.html">Login/Sign Up</a>
+    <a href="profile.html">Profile</a>
+    <a href="upload.html">Upload Blog</a>
+    <a href="view.html"> Blogs</a>
+  </nav>
+
+  <div class="hero" id="hero">
+    <div>Unblock your daily dose of Anime</div>
+    <span>Your daily dose of Toons</span>
+  </div>
+
+  <div class="section">
+    <h2>Top Trending Blogs</h2>
+    <div class="scroll-wrapper">
+      <div class="scroll-track" id="blogScrollTrack">
+        <!-- Cards will be injected here by JS -->
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 ToonBlogs. All Rights Reserved.
+  </footer>
+
+  <script>
+    // Blog cards
+    const blogs = [
+      { title: "Naruto's Legacy", img: "https://i.postimg.cc/DynmGjGc/Leonardo-Phoenix-09-A-vibrant-dynamic-illustration-depicting-t-2.jpg", date: "May 20, 2025" },
+      { title: "Attack on Titan", img: "https://i.postimg.cc/SRT0Jx83/Leonardo-Phoenix-10-A-dramatic-and-intense-scene-from-the-popu-2.jpg", date: "May 21, 2025" },
+      { title: "Studio Ghibli Magic", img: "https://i.postimg.cc/BbMg38DL/Leonardo-Phoenix-10-A-whimsical-dreamlike-scene-inspired-by-th-1.jpg", date: "May 22, 2025" },
+      { title: "Cartoon Network Legends", img: "https://i.postimg.cc/RVBGHBGb/Leonardo-Phoenix-10-A-vibrant-and-dynamic-illustration-featuri-2.jpg", date: "May 23, 2025" },
+      { title: "One Piece Voyages", img: "https://i.postimg.cc/TwyGgm2G/Leonardo-Phoenix-10-A-vibrant-and-dynamic-illustration-of-the-1.jpg", date: "May 24, 2025" },
+      { title: "Dragon Ball Energy", img: "https://i.postimg.cc/rsFmBzMP/Leonardo-Phoenix-10-A-vibrant-dynamic-illustration-of-the-Drag-3.jpg", date: "May 25, 2025" }
+    ];
+
+    const blogScrollTrack = document.getElementById('blogScrollTrack');
+    const duplicatedBlogs = [...blogs, ...blogs];
+
+    duplicatedBlogs.forEach(blog => {
+      const card = document.createElement('div');
+      card.className = 'blog-card';
+      card.innerHTML = `
+        <img src="${blog.img}" alt="${blog.title}">
+        <a href="view.html">${blog.title}</a>
+        <div class="date">Published: ${blog.date}</div>
+      `;
+      blogScrollTrack.appendChild(card);
+    });
+
+    // Background slider
+    const backgroundImages = [
+      'https://i.postimg.cc/ncgs8W4p/Flux-Dev-Create-a-captivating-illustration-featuring-a-diverse-2.jpg',
+      'https://i.postimg.cc/1zv908RJ/Flux-Dev-Create-a-captivating-illustration-featuring-a-diverse-1.jpg',
+      'https://i.postimg.cc/cJxx8RWv/Flux-Dev-Create-a-captivating-illustration-featuring-a-diverse-0.jpg'
+    ];
+
+    const hero = document.getElementById('hero');
+    let currentImage = 0;
+    setInterval(() => {
+      currentImage = (currentImage + 1) % backgroundImages.length;
+      hero.style.backgroundImage = `url('${backgroundImages[currentImage]}')`;
+    }, 6000);
+
+    // Falling letters animation
+    const header = document.getElementById('header');
+    const text = "ToonBlogs";
+
+    function createFallingLetter(char, delay) {
+      const span = document.createElement('span');
+      span.classList.add('falling-letter');
+      span.textContent = char;
+      span.style.left = `${Math.random() * (window.innerWidth - 20)}px`;
+      span.style.animationDuration = `${3 + Math.random() * 2}s`; // 3 to 5 seconds
+      span.style.animationDelay = `${delay}s`;
+      header.appendChild(span);
+
+      span.addEventListener('animationend', () => {
+        header.removeChild(span);
+      });
+    }
+
+    function animateLetters() {
+      let delay = 0;
+      for (let i = 0; i < text.length; i++) {
+        if (text[i] !== ' ') {
+          createFallingLetter(text[i], delay);
+          delay += 0.3;
+        }
+      }
+    }
+
+    animateLetters();
+    setInterval(animateLetters, 4000);
+  </script>
+</body>
+</html>

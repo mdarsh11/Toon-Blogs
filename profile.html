@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ToonBlogs - Profile</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #eee;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #FF6F61;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      height: 100px;
+      overflow: hidden;
+    }
+    header h1, header p {
+      position: relative;
+      color:white;
+      z-index: 1;
+      margin: 0;
+    }
+    .falling-letter {
+      position: absolute;
+      top: -50px;
+      font-weight: bold;
+      font-size: 2em;
+      color: white;
+      user-select: none;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+    @keyframes fall {
+      to {
+        top: 120px;
+        opacity: 0;
+      }
+    }
+
+    nav {
+      background: #222;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav a {
+      color: #eee;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #ff6f61;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255,111,97,0.4);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #ff6f61;
+    }
+
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .profile-image-container {
+      flex-shrink: 0;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: #333;
+      overflow: hidden;
+      box-shadow: 0 0 10px #ff6f61;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .profile-image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .upload-label {
+      position: absolute;
+      bottom: 8px;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      color: #fff;
+      background: rgba(0,0,0,0.5);
+      padding: 4px 0;
+      cursor: pointer;
+    }
+
+    .username-section {
+      flex-grow: 1;
+      min-width: 200px;
+    }
+
+    .username-section label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      color: #ff6f61;
+    }
+
+    .username-section input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+      background: #333;
+      color: #eee;
+    }
+
+    .blogs-section {
+      margin-top: 20px;
+    }
+
+    .blogs-section h2 {
+      border-bottom: 2px solid #ff6f61;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+
+    .blog-item {
+      background: #2a2a2a;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(255,111,97,0.3);
+    }
+
+    .blog-item h3 {
+      margin: 0 0 8px;
+      color: #ff6f61;
+    }
+
+    .blog-item p {
+      margin: 0;
+      color: #ccc;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <header id="header">
+    <h1>ToonBlogs</h1>
+    <p>Your daily dose of Anime & Cartoons</p>
+  </header>
+
+  <nav>
+    <a href="welcome.html">Home</a>
+    <a href="profile.html">My Profile</a>
+    <a href="upload.html">Upload Blog</a>
+    <a href="view.html"> Blogs</a>
+  </nav>
+
+  <div class="container">
+    <h1>My Profile</h1>
+
+    <div class="profile-section">
+      <div class="profile-image-container" onclick="document.getElementById('profile-pic-input').click()">
+        <img id="profile-pic" src="https://via.placeholder.com/150" alt="Profile Image" />
+        <label for="profile-pic-input" class="upload-label">Click to upload</label>
+      </div>
+
+      <div class="username-section">
+        <label for="username">Username:</label>
+        <input type="text" id="username" placeholder="Your username" />
+      </div>
+    </div>
+
+    <div class="blogs-section">
+      <h2>My Blogs</h2>
+      <div id="blogs-list">
+        <div class="blog-item">
+          <h3>Naruto's Legacy</h3>
+          <p>A curated list of must-watch anime this year, including ratings and reviews.</p>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="profile-pic-input" accept="image/*" style="display:none" />
+
+  <script>
+  // Show preview when user uploads profile image
+  const profilePicInput = document.getElementById('profile-pic-input');
+  const profilePicImg = document.getElementById('profile-pic');
+
+  profilePicInput.addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        profilePicImg.src = e.target.result;
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Load current logged-in username
+  const currentUser = localStorage.getItem("toonblogsCurrentUser");
+  if (currentUser) {
+    document.getElementById("username").value = currentUser;
+  }
+
+  // Falling letters animation for header
+  const header = document.getElementById('header');
+  const text = "ToonBlogs";
+
+  function createFallingLetter(char, delay) {
+    const span = document.createElement('span');
+    span.classList.add('falling-letter');
+    span.textContent = char;
+    span.style.left = `${Math.random() * (window.innerWidth - 20)}px`;
+    span.style.animationDuration = `${3 + Math.random() * 2}s`;
+    span.style.animationDelay = `${delay}s`;
+    header.appendChild(span);
+    span.addEventListener('animationend', () => {
+      header.removeChild(span);
+    });
+  }
+
+  function animateLetters() {
+    let delay = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] !== ' ') {
+        createFallingLetter(text[i], delay);
+        delay += 0.3;
+      }
+    }
+  }
+
+  animateLetters();
+  setInterval(animateLetters, 4000);
+</script>
+
+</body>
+</html>

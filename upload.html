@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload Blog - ToonBlogs</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #eee;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #FF6F61;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      height: 100px;
+      overflow: hidden;
+    }
+
+    header h1, header p {
+      position: relative;
+      color: white;
+      z-index: 1;
+      margin: 0;
+    }
+
+    .falling-letter {
+      position: absolute;
+      top: -50px;
+      font-weight: bold;
+      font-size: 2em;
+      color: white;
+      user-select: none;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes fall {
+      to {
+        top: 120px;
+        opacity: 0;
+      }
+    }
+
+    nav {
+      background: #222;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav a {
+      color: #eee;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #ff6f61;
+    }
+
+    /* --- Image Styling --- */
+    .header-image-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: #121212;
+    }
+
+    .header-image-wrapper img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(255, 111, 97, 0.5);
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #222;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255,111,97,0.4);
+    }
+
+    textarea, input[type="file"], input[type="text"] {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+      background: #333;
+      color: #eee;
+    }
+
+    button {
+      background: #FF6F61;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #ff4d3b;
+    }
+  </style>
+</head>
+<body>
+
+  <header id="header">
+    <h1>ToonBlogs</h1>
+    <p>Upload Blog</p>
+  </header>
+
+  <nav>
+    <a href="welcome.html">Home</a>
+    <a href="profile.html">Profile</a>
+    <a href="upload.html">Upload Blog</a>
+    <a href="view.html"> Blogs</a>
+  </nav>
+
+  <!-- ⭐ Image Section -->
+  <div class="header-image-wrapper">
+    <img src="https://i.postimg.cc/3wb62xwH/Leonardo-Kino-XL-make-a-blog-writer-make-a-blog-in-animated-an-0.jpg" alt="Toon Blogs Banner">
+  </div>
+
+  <!-- ⭐ Blog Upload Form -->
+  <div class="container">
+    <input type="text" id="author" placeholder="Author Name">
+    <textarea id="blogText" placeholder="Write your blog here..."></textarea>
+    <input type="file" id="blogImage" accept="image/*">
+    <button onclick="uploadBlog()">Submit Blog</button>
+  </div>
+s
+  <script>
+  // Falling letters animation
+  const header = document.getElementById('header');
+  const text = "ToonBlogs";
+
+  function createFallingLetter(char, delay) {
+    const span = document.createElement('span');
+    span.classList.add('falling-letter');
+    span.textContent = char;
+    span.style.left = `${Math.random() * (window.innerWidth - 20)}px`;
+    span.style.animationDuration = `${3 + Math.random() * 2}s`;
+    span.style.animationDelay = `${delay}s`;
+    header.appendChild(span);
+    span.addEventListener('animationend', () => {
+      header.removeChild(span);
+    });
+  }
+
+  function animateLetters() {
+    let delay = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] !== ' ') {
+        createFallingLetter(text[i], delay);
+        delay += 0.3;
+      }
+    }
+  }
+
+  animateLetters();
+  setInterval(animateLetters, 4000);
+
+  // Upload blog with image as base64
+  function uploadBlog() {
+    const author = document.getElementById('author').value;
+    const text = document.getElementById('blogText').value;
+    const imageInput = document.getElementById('blogImage');
+    const date = new Date().toLocaleString();
+
+    if (imageInput.files.length > 0) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const blog = {
+          author,
+          text,
+          image: e.target.result, // Base64 string
+          date
+        };
+        localStorage.setItem('uploadedBlog', JSON.stringify(blog));
+        clearForm();
+      };
+      reader.readAsDataURL(imageInput.files[0]);
+    } else {
+      const blog = {
+        author,
+        text,
+        image: '',
+        date
+      };
+      localStorage.setItem('uploadedBlog', JSON.stringify(blog));
+      clearForm();
+    }
+
+    function clearForm() {
+      document.getElementById('author').value = '';
+      document.getElementById('blogText').value = '';
+      imageInput.value = '';
+      alert('Blog uploaded successfully!');
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ToonBlogs - Auth</title>
+  <style>
+    body {
+      background: #000 url('https://i.postimg.cc/ncgs8W4p/Flux-Dev-Create-a-captivating-illustration-featuring-a-diverse-2.jpg') no-repeat center center/cover;
+      margin: 0;
+      font-family: Arial;
+    }
+    nav {
+      background: #222;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .form-container {
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 30px;
+      max-width: 400px;
+      margin: 100px auto;
+      border-radius: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #FF6F61;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .toggle {
+      margin-top: 10px;
+      text-align: center;
+      cursor: pointer;
+      color: #FF6F61;
+    }
+  </style>
+</head>
+<body>
+  
+
+  <div class="form-container" id="loginForm">
+    <h2>Login</h2>
+    <input type="text" id="loginUsername" placeholder="Username">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button onclick="loginUser()">Login</button>
+    <div class="toggle" onclick="toggleForms()">New User? Sign Up</div>
+  </div>
+
+  <div class="form-container" id="signupForm" style="display:none;">
+    <h2>Sign Up</h2>
+    <input type="text" id="signupUsername" placeholder="Choose a Username">
+    <input type="password" id="signupPassword" placeholder="Choose a Password">
+    <button onclick="signupUser()">Sign Up</button>
+    <div class="toggle" onclick="toggleForms()">Already have an account? Login</div>
+  </div>
+
+  <!-- Only updated JS part, rest remains same -->
+
+<script>
+  function toggleForms() {
+    const login = document.getElementById('loginForm');
+    const signup = document.getElementById('signupForm');
+    if (login.style.display === 'none') {
+      login.style.display = 'block';
+      signup.style.display = 'none';
+    } else {
+      login.style.display = 'none';
+      signup.style.display = 'block';
+    }
+  }
+
+  function loginUser() {
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+
+    // Hardcoded user
+    if (username === "DEMO" && password === "1234") {
+      localStorage.setItem("toonblogsCurrentUser", username);
+      window.location.href = "welcome.html";
+      return;
+    }
+
+    // Check from localStorage
+    const storedUsers = JSON.parse(localStorage.getItem("toonUsers")) || {};
+    if (storedUsers[username] && storedUsers[username] === password) {
+      localStorage.setItem("toonblogsCurrentUser", username); // ✅ Save current user
+      window.location.href = "welcome.html";
+    } else {
+      alert("Wrong username or password!");
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'block';
+    }
+  }
+
+  function signupUser() {
+    const username = document.getElementById('signupUsername').value;
+    const password = document.getElementById('signupPassword').value;
+
+    if (!username || !password) {
+      alert("Please fill both fields!");
+      return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("toonUsers")) || {};
+
+    if (users[username]) {
+      alert("User already exists. Please choose a different username.");
+      return;
+    }
+
+    users[username] = password;
+    localStorage.setItem("toonUsers", JSON.stringify(users));
+    alert("Sign-up successful! You can now login.");
+    toggleForms();
+  }
+</script>
+
+</body>
+</html>
